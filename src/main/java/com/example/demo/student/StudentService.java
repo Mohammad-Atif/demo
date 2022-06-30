@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Optional;
 
 
 // @Component - tells that this class needs to be instantiated , it is a bean
@@ -30,8 +31,10 @@ public class StudentService {
     }
 
     public void addNewStudent(Student student) {
-
-        System.out.println(student);
-        System.out.println("Hello");
+        Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
+        if(studentOptional.isPresent()){
+            throw new IllegalStateException("email already taken");
+        }
+        studentRepository.save(student);
     }
 }
