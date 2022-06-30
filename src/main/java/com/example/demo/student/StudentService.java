@@ -6,10 +6,12 @@ package com.example.demo.student;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -46,5 +48,25 @@ public class StudentService {
                     "student with id "+studentId+" does not exists");
         }
         studentRepository.deleteById(studentId);
+    }
+
+    @Transactional
+    public void updateStudent(Long studentId, String name, String email) {
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        if(studentOptional.isEmpty())
+        {
+            throw new IllegalStateException(
+                    "student with id "+studentId+" does not exists");
+        }
+        Student student = studentOptional.get();
+        if(name != null && name.length() > 0 && !Objects.equals(student.getName(),name)){
+            student.setName(name);
+        }
+
+        if(email != null &&  email.length() > 0 && !Objects.equals(student.getEmail(),email))
+        {
+            student.setEmail(email);
+        }
+
     }
 }
